@@ -95,7 +95,7 @@ def main():
 
         # Verificar se tem acesso (adicionar esta verificação)
         if st.session_state.get('user_role') not in ['admin', 'Advogados']:
-            st.error("Acesso restrito. Você não tem permissão para visualizar este conteúdo.")
+            st.error(f"Acesso restrito. Você não tem permissão para visualizar este conteúdo. Role: {st.session_state.get('user_role')}")
             if st.button("Voltar"):
                 del st.session_state['token']
                 st.rerun()
