@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pandas as pd
 import requests
@@ -5,13 +6,18 @@ import plotly.express as px
 
 from requests.exceptions import RequestException
 
-DJANGO_API_URL = st.secrets["django_api"]["api_url"]
+# Verifica se está no Heroku (usando variáveis de ambiente) ou local (usando secrets.toml)
+if 'DYNO' in os.environ:  # Verifica se está rodando no Heroku
+    DJANGO_API_URL = os.environ.get('DJANGO_API_URL')
+    DJANGO_USERNAME = os.environ.get('DJANGO_API_USERNAME')
+    DJANGO_PASSWORD = os.environ.get('DJANGO_API_PASSWORD')
+else:  # Modo de desenvolvimento local
+    DJANGO_API_URL = st.secrets["django_api"]["api_url"]
+    DJANGO_USERNAME = st.secrets["django_api"]["username"]
+    DJANGO_PASSWORD = st.secrets["django_api"]["password"]
+
 TOKEN_ENDPOINT = "api/v1/authentication/token/"
 API_ENDPOINT = "api/v1/clientes/"
-
-DJANGO_USERNAME = st.secrets["django_api"]["username"]
-DJANGO_PASSWORD = st.secrets["django_api"]["password"]
-
 
 @st.cache_data(ttl=600)  # Cache por 10 minutos
 def fetch_resource(endpoint, token):
