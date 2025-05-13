@@ -1,40 +1,71 @@
 import streamlit as st
-from utils import fetch_resource, create_cliente_link
+from utils import fetch_resource, create_cliente_link, handle_session
 import pandas as pd
 
+handle_session()
 st.set_page_config(page_title="Clientes", page_icon="📈", layout="wide")
 
-st.title("Clientes")
-st.write("Esta página é para mostrar os clientes.")
+st.title("📇 Lista de Clientes")
+st.write("Explore os dados dos clientes cadastrados no sistema.")
 
 initial_clientes = fetch_resource("api/v1/clientes/", st.session_state['token'])
 
-# filtros de requerimento inicial
 if initial_clientes:
-    # Process initial requests data
-    df_atendimentos = pd.DataFrame(initial_clientes)
+    df_clientes = pd.DataFrame(initial_clientes)
 
-    # Criar duas colunas para os filtros
-    st.metric("Total de Clientes", len(initial_clientes))
+    # Sidebar com filtros
+    with st.sidebar:
+        st.header("🔎 Filtros")
+        busca_nome = st.text_input("Pesquisar por nome:")
+        busca_cpf = st.text_input("Pesquisar por CPF:")
 
-    # Criar tabela com links
-    if not df_atendimentos.empty:
+    # Aplicar filtros
+    if busca_nome:
+        df_clientes = df_clientes[df_clientes['nome'].str.contains(busca_nome, case=False)]
+    if busca_cpf:
+        df_clientes = df_clientes[df_clientes['cpf'].str.contains(busca_cpf)]
+
+    st.metric("Total de Clientes", len(df_clientes),
+              help="Número total de clientes cadastrados no sistema")
+
+    if not df_clientes.empty:
+        # Formatar dados
+        df_clientes['data_nascimento'] = pd.to_datetime(df_clientes['data_nascimento']).dt.strftime('%d/%m/%Y')
+        df_clientes['telefone'] = df_clientes['telefone'].fillna('N/A')
+
+        # Criar links
+        df_clientes['Detalhes'] = df_clientes['cpf'].apply(
+            lambda cpf: f'<a href="{create_cliente_link(cpf)}" target="_blank" style="color: #1f77b4; text-decoration: none;">Detalhes</a>'
+        )
+
+        # Selecionar e ordenar colunas
+        cols = ['nome', 'data_nascimento', 'cpf', 'telefone', 'email', 'Detalhes']
+        df_display = df_clientes[cols].sort_values('nome', ascending=True)
+
+        # Estilizar a tabela
+        st.markdown("""
+        <style>
+            table { width: 100%; border-collapse: collapse; }
+            th {  padding: 12px; text-align: left; }
+            td { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
+            a:hover { text-decoration: underline !important; }
+            .stNumberInput { width: 120px; }
+        </style>
+        """, unsafe_allow_html=True)
+
         st.subheader("Lista de Clientes")
 
-        # Criar DataFrame para exibição com links
-        df_display = df_atendimentos[['cpf', 'nome', 'data_nascimento', 'telefone', 'observacao_telefone', 'telefone_whatsapp', 'email']].copy()
-        df_display['Link'] = df_display.apply(
-            lambda row: create_cliente_link(
-                cpf=row['cpf'],  # Supondo que este é o campo com o CPF
-            ),
-            axis=1
+        st.markdown(
+            df_display
+            .to_html(escape=False, index=False,
+                     columns=cols,
+                     header=True,
+                     justify='left'),
+            unsafe_allow_html=True
         )
-        # Ordenar por nome (ordem alfabética)
-        df_display = df_display.sort_values('nome', ascending=True)
 
-        # Exibir tabela (usando markdown para renderizar os links)
-        with st.expander("Mostrar Clientes"):
-            st.dataframe(df_display)
-            # for "", unsafe_allow_html=True)
     else:
-        st.warning("Nenhum atendimento registrado")
+        st.warning("Nenhum cliente encontrado com os filtros selecionados")
+
+else:
+    st.error("Não foi possível carregar os dados dos clientes")
