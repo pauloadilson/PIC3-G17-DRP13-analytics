@@ -31,6 +31,9 @@ if initial_requerimento_inicial:
     if busca_cpf:
         df_requerimento_inicial = df_requerimento_inicial[df_requerimento_inicial['requerente_titular'].str.contains(busca_cpf)]
 
+    st.metric("Total de Requerimentos Iniciais", len(df_requerimento_inicial),
+              help="Número total de requerimentos iniciais cadastrados no sistema")
+
     col1, col2 = st.columns(2)
     with col1:
         if 'estado_nome' in df_requerimento_inicial.columns:

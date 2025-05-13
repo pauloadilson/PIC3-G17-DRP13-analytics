@@ -31,6 +31,9 @@ if initial_recurso:
     if busca_cpf:
         df_recurso = df_recurso[df_recurso['requerente_titular'].str.contains(busca_cpf)]
 
+    st.metric("Total de Recursos", len(df_recurso),
+              help="Número total de recursos cadastrados no sistema")
+
     col1, col2 = st.columns(2)
     with col1:
         if 'estado_nome' in df_recurso.columns:

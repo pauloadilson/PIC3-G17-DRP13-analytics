@@ -6,7 +6,7 @@ handle_session()
 st.set_page_config(page_title="Atendimentos", page_icon="📈", layout="wide")
 
 st.title("Atendimentos")
-st.write("Esta página é para mostrar os atendimentos.")
+st.write("Explore os dados dos atendimentos cadastrados no sistema.")
 
 initial_atendimentos = fetch_resource("api/v1/atendimentos/", st.session_state['token'])
 
@@ -28,9 +28,6 @@ if initial_atendimentos:
         df_atendimentos = df_atendimentos[df_atendimentos['data'].str.contains(busca_data, case=False)]
     if busca_cpf:
         df_atendimentos = df_atendimentos[df_atendimentos['cliente'].str.contains(busca_cpf)]
-
-    # Seção de filtro por estado
-    st.header("Filtrar Atendimentos")
 
     # Criar duas colunas para os filtros
     st.metric("Total de Atendimentos", len(df_atendimentos))
