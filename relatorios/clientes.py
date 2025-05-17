@@ -3,7 +3,7 @@ from utils import fetch_resource, create_cliente_link, handle_session
 import pandas as pd
 
 handle_session()
-st.set_page_config(page_title="Clientes", page_icon="📈", layout="wide")
+# st.set_page_config(page_title="Clientes", page_icon="📈", layout="wide")
 
 st.title("📇 Lista de Clientes")
 st.write("Explore os dados dos clientes cadastrados no sistema.")

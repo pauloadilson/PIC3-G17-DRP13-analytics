@@ -4,7 +4,7 @@ import plotly.express as px
 import pandas as pd
 
 handle_session()
-st.set_page_config(page_title="Recursos", page_icon="../static/images/favicon.ico", layout="wide")
+# st.set_page_config(page_title="Recursos", page_icon="../static/images/favicon.ico", layout="wide")
 
 st.title("Recursos")
 st.write("Esta página é para mostrar os recursos.")

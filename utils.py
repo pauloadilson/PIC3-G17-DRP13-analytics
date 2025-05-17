@@ -19,7 +19,7 @@ TOKEN_VALIDATION_ENDPOINT = "api/v1/authentication/token/verify/"
 
 
 def login():
-    st.set_page_config(page_title="Login", page_icon="🔐")
+    # st.set_page_config(page_title="Login", page_icon="🔐")
     st.title("🔐 Login")
     remember_me = st.checkbox("Lembrar-me", value=True)
     with st.form("login_form"):

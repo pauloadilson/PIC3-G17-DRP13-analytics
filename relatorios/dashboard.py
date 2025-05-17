@@ -4,22 +4,9 @@ from utils import fetch_resource, handle_session
 from metricas import calcular_metricas_periodicas, calcular_frequencia
 
 handle_session()
-st.set_page_config(page_title="Análise de Dados - CPPREV",
-                   page_icon="static/images/favicon.png",
-                   layout="wide")
-
-# Verificar nível de acesso (adicionar esta parte)
-user_info = fetch_resource("api/v1/user-info/", st.session_state['token'])
-if user_info and 'role' in user_info:
-    st.session_state['user_role'] = user_info['role']
-
-# Verificar se tem acesso (adicionar esta verificação)
-if st.session_state.get('user_role') not in ['admin', 'Advogados']:
-    st.error(f"Acesso restrito. Você não tem permissão para visualizar este conteúdo. Role: {st.session_state.get('user_role')}")
-    if st.button("Voltar"):
-        del st.session_state['token']
-        st.rerun()
-    st.stop()  # Impede a execução do restante do código
+# st.set_page_config(page_title="Análise de Dados - CPPREV",
+#                    page_icon="static/images/favicon.png",
+#                    layout="wide")
 
 # Título
 st.title("Análise de Clientes, Atendimentos e Requerimentos Iniciais")

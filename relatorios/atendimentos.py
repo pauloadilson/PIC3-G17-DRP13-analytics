@@ -3,16 +3,14 @@ from utils import fetch_resource, create_atendimento_link, handle_session
 import pandas as pd
 
 handle_session()
-st.set_page_config(page_title="Atendimentos", page_icon="📈", layout="wide")
+# st.set_page_config(page_title="Atendimentos", page_icon="📈", layout="wide")
 
 st.title("Atendimentos")
 st.write("Explore os dados dos atendimentos cadastrados no sistema.")
 
 initial_atendimentos = fetch_resource("api/v1/atendimentos/", st.session_state['token'])
 
-# filtros de requerimento inicial
 if initial_atendimentos:
-    # Process initial requests data
     df_atendimentos = pd.DataFrame(initial_atendimentos)
 
     df_atendimentos['requerimento'] = df_atendimentos['requerimento'].fillna("")
@@ -74,3 +72,4 @@ if initial_atendimentos:
         )
     else:
         st.warning("Nenhum atendimento registrado")
+
