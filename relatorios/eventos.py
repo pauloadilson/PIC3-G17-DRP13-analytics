@@ -46,7 +46,7 @@ if initial_eventos:
         df_display['data_inicio'] = pd.to_datetime(df_display['data_inicio']).dt.strftime('%d/%m/%Y')
         # Ordenar por data (mais recente primeiro)
         df_display = df_display.sort_values(
-            'data',
+            'data_inicio',
             ascending=False,
             key=lambda s: pd.to_datetime(s, dayfirst=True)
         )
